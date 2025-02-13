@@ -13,6 +13,34 @@ class TaxCalculatorSpec extends AnyWordSpec {
 
         assert(result == 0)
       }
+
+      "the income is within the basic rate" in {
+        val result: Double = taxCalculator.calculateTax(20000)
+        assert(result == (20000 - 10000) * 0.2)
+      }
+
+      "the income is within the higher rate" in {
+        val result: Double = taxCalculator.calculateTax(60000)
+        assert(result == ((50000 - 10000) * 0.2) + (60000 - 50000) * 0.4)
+      }
+
+      "the income is in the additional rate" in {
+        val result: Double = taxCalculator.calculateTax(126000)
+        assert((result == ((50000 - 10000) * 0.2) + (125000 - 50000) * 0.4 + (126000 - 125000) * 0.45))
+      }
+    }
+
+  }
+
+  "TaxCalculator.IsHigherRateTaxpayer" should {
+    "be true if income is above basic rate limit" in {
+      assert(taxCalculator.isHigherRateTaxpayer(60000) == true)
+    }
+
+    "be false if income is lower than basic rate limit" in {
+      assert(taxCalculator.isHigherRateTaxpayer(40000) == false)
     }
   }
+
+
 }
